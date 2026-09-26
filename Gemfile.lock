@@ -102,10 +102,10 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    clerk-sdk-ruby (5.1.3)
+    clerk-sdk-ruby (8.0.1)
       base64 (>= 0.2.0, < 1.0)
       concurrent-ruby (~> 1.3.5)
-      faraday (>= 2.14.1)
+      faraday (>= 2.14.3)
       faraday-multipart (~> 1.2.0)
       faraday-retry (~> 2.4.0)
       jwt (~> 3.0)
@@ -502,7 +502,7 @@ DEPENDENCIES
   bootstrap (~> 5.3.3)
   brakeman
   capybara
-  clerk-sdk-ruby (~> 5.1)
+  clerk-sdk-ruby (~> 8.0)
   dartsass-rails
   debug
   dotenv-rails
@@ -560,7 +560,7 @@ CHECKSUMS
   builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
   bundler (4.0.17) sha256=214e21431b5665dd2f99df8a5511c6b151d7a72e8015c8b38f8b775b61cbb6c1
   capybara (3.40.0) sha256=42dba720578ea1ca65fd7a41d163dd368502c191804558f6e0f71b391054aeef
-  clerk-sdk-ruby (5.1.3) sha256=a03892f6d351188f979ffa43ebdfc0b1ba49dac51dd6b7ba5c27c7414e49efa9
+  clerk-sdk-ruby (8.0.1) sha256=08ae8d63872b48f6f71885614a4d89be2b802c7416746f7461f301d9d036732d
   concurrent-ruby (1.3.8) sha256=b2f1be836e968ccc78ccfce277ea79c72a88633f22306782c16ff23fb415d1e1
   connection_pool (3.0.2) sha256=33fff5ba71a12d2aa26cb72b1db8bba2a1a01823559fb01d29eb74c286e62e0a
   crack (1.0.1) sha256=ff4a10390cd31d66440b7524eb1841874db86201d5b70032028553130b6d4c7e

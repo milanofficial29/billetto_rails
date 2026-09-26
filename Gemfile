@@ -43,7 +43,7 @@ gem "thruster", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
-gem 'clerk-sdk-ruby', '~> 5.1', require: "clerk"
+gem 'clerk-sdk-ruby', '~> 8.0', require: "clerk"
 
 gem "dartsass-rails"
 gem "bootstrap", "~> 5.3.3"
