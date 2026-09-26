@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Billetto Rails" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <script async crossorigin="anonymous"
+      src="https://useful-snipe-29.clerk.accounts.dev/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+      data-clerk-publishable-key="<%= ENV['CLERK_PUBLISHABLE_KEY'] %>">
+    </script>
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+
+  <body>
+    <nav style="padding: 1rem; background: #f5f5f5; margin-bottom: 1rem; display: flex; justify-content:
+  space-between; align-items: center;">
+        <strong>Billetto Events</strong>
+        <div id="clerk-auth"></div>
+    </nav>
+    <!-- Renders the flash message wrapper -->
+    <%= render "shared/flash" %>
+    <%= yield %>
+    <script>
+        window.addEventListener('load', async function () {
+          await Clerk.load();
+
+          const container = document.getElementById('clerk-auth');
+
+          if (Clerk.user) {
+            container.innerHTML =
+              '<span>Signed in as ' + (Clerk.user.firstName || Clerk.user.emailAddresses[0].emailAddress) +
+  '</span>' +
+              ' &nbsp; <button onclick="Clerk.signOut(() => window.location.reload())">Sign Out</button>';
+          } else {
+            container.innerHTML =
+              '<button onclick="Clerk.openSignIn()">Sign In</button>';
+          }
+        });
+      </script>
+  </body>
+</html>

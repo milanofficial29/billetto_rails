@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@clerk/clerk-js": "^6.34.1",
+    "@popperjs/core": "^2.11.8"
+  }
+}
