@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "event_#{@event.id}_voting" do %>
+  <%= render "events/voting", event: @event, current_user_vote: params[:type].presence %>
+<% end %>

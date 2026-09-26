@@ -1,0 +1,20 @@
+<div id="event_<%= event.id %>_voting">
+	<!-- Like Button -->
+	<% if current_user %>
+		<%= link_to event_vote_path(event, type: current_user_vote == "like" ? "" : "like"), 
+									data: { turbo_method: :post }, 
+									class: "#{current_user_vote == 'like' ? 'btn btn-primary' : 'btn btn-outline-primary'}" do %>
+			<span class="fa fa-thumbs-up"> <%= event.like_count %></span>
+		<% end %>
+
+		<!-- Dislike Button -->
+		<%= link_to event_vote_path(event, type: current_user_vote == "dislike" ? "" : "dislike"), 
+									data: { turbo_method: :post }, 
+									class: "#{current_user_vote == 'dislike' ? 'btn btn-danger' : 'btn btn-outline-danger'}" do %>
+			<span class="fa fa-thumbs-down"> <%= event.dislike_count %></span>
+		<% end %>
+	<% else %>
+	  <span class="fa fa-thumbs-up" style="color: #0d6efd;"> <%= event.like_count %></span>
+		<span class="fa fa-thumbs-down" style="color: #dc3545;"> <%= event.dislike_count %></span>
+	<% end %>
+</div>

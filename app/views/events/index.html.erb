@@ -1,0 +1,27 @@
+<%= turbo_frame_tag "events_page_#{params[:page] || 1}" do %>
+  <div class="row">
+    <% @events.each do |event| %>
+      <div class="col-md-2">
+        <div class="card" style="width: 18rem;">
+          <img src="<%= event.image_url %>" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title"><%= event.title %></h5>
+            <h3><strong>Date:</strong><%= event.starts_at&.strftime('%d %b %Y, %H:%M') %></h3>
+            <p class="card-text"><%= truncate(event.description.to_s, length: 200)%></p>
+            <% current_user_vote = event.user_vote_state(current_user) %>
+            <%= render "events/voting", event: event, current_user_vote: current_user_vote %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <!-- Fast Infinite Scroll Target -->
+  <% if @pagy.next %>
+    <%= turbo_frame_tag "events_page_#{@pagy.next}", 
+                        src: events_path(page: @pagy.next), 
+                        loading: :lazy, 
+                        target: "_top" do %>
+      <div class="text-center py-4 text-gray-500 animate-pulse">Loading more...</div>
+    <% end %>
+  <% end %>
+<% end %>
