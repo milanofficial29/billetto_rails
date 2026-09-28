@@ -5,7 +5,7 @@ FactoryBot.define do
     description   { "A test event description" }
     starts_at     { 1.week.from_now }
     ends_at       { 1.week.from_now + 2.hours }
-    image_url     { "https://example.com/image.jpg" }
+    image_url     { "https://picsum.photos/200/300?grayscale" }
     billetto_url  { "https://billetto.dk/e/test-event" }
     available     { true }
     like_count    { 0 }

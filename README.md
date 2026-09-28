@@ -1,76 +1,128 @@
 # Billetto Rails Integration
 
-A Rails application that pulls events from the Billetto API, displays them, and lets signed-in users vote on them. Votes are recorded as immutable events in Rails Event Store rather than a plain votes table.
+A Rails application that fetches events from the Billetto API, displays them, and allows signed-in users to like or dislike events.
+
+Votes are stored as immutable events using Rails Event Store instead of a traditional `votes` table.
 
 ## Requirements
 
-- Ruby 3.3.6
-- MySql
+* Ruby 3.3.6
+* MySQL
 
 ## Setup
 
-Clone the repo and install dependencies:
+Clone the repository and install the dependencies:
 
 ```bash
 bundle install
 ```
 
-Copy the environment file and fill in your credentials:
+Copy the environment file:
 
 ```bash
 cp .env.example .env
 ```
 
-Open `.env` and add:
+Add the required credentials to `.env`:
 
-```
+```env
 CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
 CLERK_SECRET_KEY=your_clerk_secret_key
+
 BILLETTO_ACCESS_KEY_ID=your_billetto_access_key_id
 BILLETTO_ACCESS_KEY_SECRET=your_billetto_access_key_secret
+
+DATABASE_USERNAME="your_db_username"
+DATABASE_PASSWORD="your_db_password"
 ```
 
 Create and migrate the database:
 
 ```bash
-rails db:create
-rails db:migrate
+bin/rails db:create
+bin/rails db:migrate
 ```
 
-Pull events from Billetto:
+Import events from Billetto:
 
 ```bash
-rails billetto:ingest
+bin/rails billetto:ingest
 ```
 
-Start the server:
+Start the application:
 
 ```bash
-rails server
+bin/rails server
 ```
 
-Visit `http://localhost:3000` to see the events listing.
+Then open:
 
-## Running Tests
+```text
+http://localhost:3000
+```
+
+## Billetto API
+
+Events are imported using the `billetto:ingest` Rake task.
+
+The task:
+
+* Fetches events from the Billetto API
+* Creates or updates events using the external Billetto ID
+* Avoids creating duplicate events when run multiple times
+* Marks events that are no longer returned by the API as unavailable
+
+The `Billetto::Event` class handles the API response and converts it into an `EventData` struct before saving anything to the database.
+
+This keeps the Billetto API structure separate from the rest of the application. If Billetto changes a response field, the adapter can be updated without changing the application code that uses the event data.
+
+## Authentication
+
+Authentication is handled by Clerk.
+
+The events page is public, so users can browse events without signing in. Users need to be signed in to like or dislike an event.
+
+The backend verifies the Clerk session and makes the authenticated user available through `current_user`.
+
+For automated system tests, Clerk authentication is mocked so the tests don't depend on the external Clerk authentication flow or CAPTCHA.
+
+## Voting
+
+Users can like or dislike an event when they are signed in.
+
+Votes are stored using Rails Event Store rather than a regular votes table. Each voting action is recorded as an immutable event.
+
+The application uses these events to determine the current like and dislike counts.
+
+## Tests
+
+Run the RSpec tests with:
 
 ```bash
 bundle exec rspec
 ```
 
----
+Run the Rails system tests with:
 
-### Billetto API
+```bash
+bin/rails test:system
+```
 
-Events are ingested via a rake task (`rails billetto:ingest`) rather than a scheduled job. The task calls the API, upserts events by their external ID, and marks anything that's no longer in the API response as unavailable. Running the task twice won't create duplicates.
+The system tests cover the main user flow, including:
 
-The `Billetto::Event` acts as an anti-corruption layer, it translates the raw API response into `EventData` structs before anything touches the database. This means if Billetto changes a field name, only the adapter needs updating.
+* Events page
+* Loading additional events while scrolling
+* Clerk authentication state
+* Like and dislike actions
+* Vote counter updates
+* Sign out
 
-### Authentication
+## Event Ingestion
 
-User authentication is handled by Clerk.com. The backend verifies the session token from the request and exposes `current_user` across controllers. The events page is public, anyone can browse events, but voting requires being signed in.
+Events are currently imported manually using:
 
-### Assumptions
+```bash
+bin/rails billetto:ingest
+```
 
-- Vote counts update synchronously in the current setup, so they reflect immediately after voting. In a production deployment with async processing there would be a brief lag, which is acceptable for a voting feature.
-- The app doesn't maintain a local user table. The Clerk user ID is the identifier used everywhere, stored in vote events, used for duplicate checking. User profile data (name, email) would come from the Clerk SDK if needed.
-- The rake task is designed to be run manually or via cron. There's no in-app trigger for ingestion.
+The task is idempotent, so running it multiple times will update existing events instead of creating duplicates.

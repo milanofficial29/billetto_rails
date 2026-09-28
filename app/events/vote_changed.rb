@@ -1,0 +1,1 @@
+class VoteChanged < RubyEventStore::Event; end

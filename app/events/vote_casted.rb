@@ -1,0 +1,1 @@
+class VoteCasted < RubyEventStore::Event; end
