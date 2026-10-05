@@ -76,4 +76,4 @@ group :test do
   gem "shoulda-matchers"
   gem "webmock"
 end
-gem "rails_event_store", "~> 3.1.0"
+gem "rails_event_store", "~> 3.2.0"
